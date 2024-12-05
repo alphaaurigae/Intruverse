@@ -22,12 +22,11 @@ extern void calculateChecksum(const char* data, size_t length, unsigned char* ch
 
 std::atomic<bool> shutting_down(false);
 
-// Function to handle graceful shutdown
 void handleShutdown(int signal) {
     std::cout << "Received shutdown signal: " << signal << std::endl;
     shutting_down = true;
     io_context.stop();
-    // Gracefully close all client connections
+
     {
         std::lock_guard<std::mutex> lock(clientsMutex);
         for (auto& client : clients) {
@@ -52,7 +51,6 @@ void sendFileContent(std::shared_ptr<tcp::socket> client) {
     }
     std::cout << "sendFileContent: File opened successfully." << std::endl;
 
-    // Buffer to hold chunks of data
     char buffer[1024];
 
     // Helper lambda to send the next chunk
@@ -153,20 +151,14 @@ int main(int argc, char** argv) {
         tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 12345));
 
         onNewConnection(acceptor);
-
-        // Here you could use Boost's filesystem or watch the file for changes
-        // to trigger a file change event. For this simple example, let's
-        // simulate a file change with a delay.
         
         // Simulate a file change after X seconds
         std::this_thread::sleep_for(std::chrono::seconds(5));
         onFileChange();
 
-        // Periodically prune closed clients to prevent memory leaks
         std::this_thread::sleep_for(std::chrono::seconds(10));
         pruneClosedClients();
 
-        // Run the IO context to start processing asynchronous operations
         io_context.run();
     } catch (const std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;

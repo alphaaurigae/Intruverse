@@ -3,4 +3,4 @@
 
 void calculateChecksum(const char* data, size_t length, unsigned char* checksum);
 
-#endif // CALCULATE_CHECKSUM_H
+#endif

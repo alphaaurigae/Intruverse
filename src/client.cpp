@@ -45,8 +45,6 @@ void startReading() {
         [this](const boost::system::error_code& ec, std::size_t length) {
             if (ec) {
                 if (ec == boost::asio::error::eof) {
-                    // EOF: The connection was cleanly closed by the server
-                    // postLogMessage("Connection closed by server.\n");
                     is_connected = false;
                     socket_.close();
                     scheduleReconnect();
@@ -71,7 +69,7 @@ void startReading() {
             const char* actualData = received_data_.data() + SHA256_DIGEST_LENGTH;
 
             if (dataLength < 1) {
-                break; // Wait for more data.
+                break;
             }
 
             unsigned char receivedChecksum[SHA256_DIGEST_LENGTH];
@@ -98,7 +96,6 @@ void startReading() {
     }
 
     void scheduleReconnect() {
-        // postLogMessage("Scheduling reconnect...\n");
         timer_.expires_after(std::chrono::milliseconds(RECONNECT_INTERVAL_MS));
         timer_.async_wait([this](const boost::system::error_code& ec) {
             if (!ec) {
