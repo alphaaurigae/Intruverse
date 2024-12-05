@@ -4,7 +4,11 @@
 - server read and provide file content to clients.
 - clients receive file content and print to console while update on changes.
 
- 
+
+### TODO
+- e.g "streaming" && timed read as options
+- sec .. tidy, format.
+
 ## Client
 ```
  $ bin/client 127.0.0.1 12345
