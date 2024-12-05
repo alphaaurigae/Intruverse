@@ -1,5 +1,5 @@
 # Intruverse 
-> Server for continuous connection datatransfer between server and client(s) ... 
+> Continuous connection datatransfer between server and client(s) ... 
 
 - server read and provide file content to clients.
 - clients receive file content and print to console while update on changes.
@@ -58,8 +58,8 @@ Monitoring file changes and updating clients.
 
 ## BUILD
 
-Test OS ubuntu 24.04
+Test OS `ubuntu 24.04`
 
 cmake ...
-./build_cmake.sh
-./clean_cmake.sh
+`./build_cmake.sh`
+`./clean_cmake.sh`
