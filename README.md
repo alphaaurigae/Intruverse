@@ -6,10 +6,11 @@
 
  
 ## Client
+```
  $ bin/client 127.0.0.1 12345
 Attempting to connect to server...
 Connected to the server.
-
+```
 (stream starts and file content shows, updated on the fly)
 
 ### Techniques
