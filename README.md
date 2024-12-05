@@ -1,22 +1,16 @@
 # Intruverse 
-> Was bored. . micro project for fun ... server unit for continuous connection datatransfer between server and client(s) (hey i can see a file and changes on it applied in realtime on a remote box - thats leet :)
+> Server for continuous connection datatransfer between server and client(s) ... 
 
-This program is a mock-up test for a client-server continuous connection to transfer data without interruption.
+- server read and provide file content to clients.
+- clients receive file content and print to console while update on changes.
 
-... reconnection ability missing, nothing encrypted, no multithreading, no security tests, no menu, no warning or error handling, no unit tests (lol), no optimization nor any "beautiful" code lol
-
+ 
 ## Client
-### Libraries
+ $ bin/client 127.0.0.1 12345
+Attempting to connect to server...
+Connected to the server.
 
-`iostream`: Input/output stream handling.
-
-`cstring`: String manipulation and memory operations.
-
-`uv.h`: Libuv library for asynchronous event-driven programming.
-
-`openssl/sha.h`: OpenSSL library for SHA checksum calculation.
-
-`openssl/evp.h`: OpenSSL library for encryption and decryption.
+(stream starts and file content shows, updated on the fly)
 
 ### Techniques
 
@@ -29,19 +23,19 @@ Verifying checksum to ensure data integrity.
 Clearing the console before writing new data.
 
 ## Server
-### Libraries
 
-`iostream`: Input/output stream handling.
-    
-`fstream`: File stream handling.
-    
-`uv.h`: Libuv library for asynchronous event-driven programming.
-    
-`vector`: Dynamic array data structure.
-    
-`openssl/sha.h`: OpenSSL library for SHA checksum calculation.
-    
-`openssl/ssl.h`, openssl/err.h, openssl/evp.h: OpenSSL library for encryption and decryption.
+```
+$ bin/server input/testfile 
+sendFileContent: Starting the process of sending file content.
+sendFileContent: File opened successfully.
+sendFileContent: Read 22 bytes from file.
+sendFileContent: Calculating checksum for the current chunk.
+sendFileContent: Checksum calculated.
+sendFileContent: Write succeeded.
+sendFileContent: File closed after all chunks were sent.
+sendFileContent: Starting the process of sending file content.
+sendFileContent: File opened successfully.
+```
 
 ### Techniques
 
@@ -63,7 +57,8 @@ Monitoring file changes and updating clients.
 
 ## BUILD
 
-`g++ client.cpp calculateChecksum.cpp -o client -luv -lssl -lcrypto`
+Test OS ubuntu 24.04
 
-`g++ server.cpp calculateChecksum.cpp -o server -luv -lssl -lcrypto`
-
+cmake ...
+./build_cmake.sh
+./clean_cmake.sh
