@@ -6,10 +6,10 @@
 
 
 ## Deps
-
+```
 - libuv1-dev - https://github.com/libuv/libuv
 - libboost-all-dev
-
+```
 ## Build
 
 - Build OS: "Ubuntu 24.04"
