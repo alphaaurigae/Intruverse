@@ -37,7 +37,6 @@ void handleShutdown(int signal) {
     }
 }
 
-// Function to send file content
 void sendFileContent(std::shared_ptr<tcp::socket> client) {
     if (shutting_down) return;
 
@@ -53,7 +52,6 @@ void sendFileContent(std::shared_ptr<tcp::socket> client) {
 
     char buffer[1024];
 
-    // Helper lambda to send the next chunk
     std::function<void()> sendNextChunk = [&]() {
         // Check if there is more data to read from the file
         if (file.read(buffer, sizeof(buffer)) || file.gcount() > 0) {
@@ -78,7 +76,7 @@ void sendFileContent(std::shared_ptr<tcp::socket> client) {
                     client->close();
                 } else {
                     std::cout << "sendFileContent: Write succeeded." << std::endl;
-                    sendNextChunk();  // Continue to send the next chunk
+                    sendNextChunk();
                 }
             });
         } else {
@@ -93,7 +91,6 @@ void sendFileContent(std::shared_ptr<tcp::socket> client) {
     sendNextChunk();
 }
 
-// Function to handle new client connections
 void onNewConnection(tcp::acceptor& acceptor) {
     std::shared_ptr<tcp::socket> client = std::make_shared<tcp::socket>(io_context);
     acceptor.async_accept(*client, [client, &acceptor](boost::system::error_code ec) {
@@ -124,7 +121,7 @@ void onFileChange() {
     }
 }
 
-// Function to prune closed client sockets
+// Prune closed client sockets
 void pruneClosedClients() {
     if (shutting_down) return;
 

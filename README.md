@@ -5,29 +5,36 @@
 - clients receive file content and print to console while update on changes.
 
 
-### TODO
-- e.g "streaming" && timed read as options
-- sec .. tidy, format.
+## Deps
+
+- libuv1-dev - https://github.com/libuv/libuv
+- libboost-all-dev
+
+## Build
+
+- Build OS: "Ubuntu 24.04"
+
+... cmake ...
+
+- ```./build_cmake.sh``` - build
+- ```./clean_cmake.sh``` - tidy build && dirs
+
 
 ## Client
+
+> Connect, receive, verify, clear for new data
+
 ```
- $ bin/client 127.0.0.1 12345
+$ bin/client 127.0.0.1 12345
 Attempting to connect to server...
 Connected to the server.
 ```
-(stream starts and file content shows, updated on the fly)
+```(stream starts and file content shows, updated periodically (int main server.cpp))```
 
-### Techniques
-
-Establishing a TCP connection to the server.
-
-Reading data from the server asynchronously.
-
-Verifying checksum to ensure data integrity.
-
-Clearing the console before writing new data.
 
 ## Server
+
+> Accept connect, checksum, push data, wait for data update, repeat.
 
 ```
 $ bin/server input/testfile 
@@ -42,28 +49,13 @@ sendFileContent: Starting the process of sending file content.
 sendFileContent: File opened successfully.
 ```
 
-### Techniques
-
-Setting up a TCP server.
-
-Accepting and handling multiple client connections.
-    
-Sending file content to connected clients.
-
-Calculating and sending checksum for data integrity.
-
-Monitoring file changes and updating clients.
-
 ## USE
 
-` ./server <file_path>`
+` ./server <file_path>` (port hardcoded sever.cpp int main)
 
-` ./client 127.0.0.1 8000`
+` ./client 127.0.0.1 12345` 
 
-## BUILD
 
-Test OS `ubuntu 24.04`
-
-cmake ...
-`./build_cmake.sh`
-`./clean_cmake.sh`
+### TODO
+- e.g "streaming" && timed read as options
+- sec .. tidy, format.
