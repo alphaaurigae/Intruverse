@@ -1,7 +1,13 @@
 
 cmake_minimum_required(VERSION 3.28.3)
-
 project(Intruverse VERSION 888.0)
+
+set(MY_PROJECT_NAME "Intruverse")
+#set(MY_PROJECT_BIN1_NAME "slient")
+#set(MY_PROJECT_BIN2_NAME "server")
+set(MY_PROJECT_VERSION "888.0")
+
+project(${MY_PROJECT_NAME} VERSION ${MY_PROJECT_VERSION} LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -61,12 +67,12 @@ if(ENABLE_SANITIZERS)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SANITIZER_FLAGS}")
 endif()
 
-option(ENABLE_COMPILE_COMMANDS "Enable generation of compile_commands.json" ON)
+option(ENABLE_COMPILE_COMMANDS "Enable generation of compile_commands.json" OFF)
 if(ENABLE_COMPILE_COMMANDS)
     set(CMAKE_EXPORT_COMPILE_COMMANDS YES CACHE BOOL "Export compile commands" FORCE)
 endif()
 
-option(ENABLE_VERBOSE_MAKEFILES "Enable verbose makefiles" ON)
+option(ENABLE_VERBOSE_MAKEFILES "Enable verbose makefiles" OFF)
 if(ENABLE_VERBOSE_MAKEFILES)
     set(CMAKE_VERBOSE_MAKEFILE ON CACHE BOOL "Enable verbose makefile output" FORCE)
 endif()
@@ -76,56 +82,72 @@ if(ENABLE_WARNINGS_AS_ERRORS)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
 endif()
 
-option(ENABLE_CLANG_TIDY "Run clang-tidy during compilation" OFF)
-if(ENABLE_CLANG_TIDY)
-    find_program(CLANG_TIDY_EXE NAMES clang-tidy)
-    if(CLANG_TIDY_EXE)
-       # set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE}")
-       # set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE};--checks=-*,modernize-*,-clang-analyzer-cplusplus.NewDeleteLeaks")
-    else()
-        message(WARNING "clang-tidy requested but not found!")
-    endif()
-endif()
-
-option(ENABLE_LOGGING "Enable detailed logging" ON)
+option(ENABLE_LOGGING "Enable detailed logging" OFF)
 if(ENABLE_LOGGING)
     add_definitions(-DENABLE_LOGGING)
 else()
     add_definitions(-DDISABLE_LOGGING)
 endif()
 
-set(LIBS
+set(LIBS_MAIN
 uv
 ssl
 crypto
 boost_system
 boost_thread
 boost_filesystem
+pthread
 )
 
-set(SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
+#set(LIBS_CLIENT
+#)
+
+#set(LIBS_SERVER
+#)
+
+set(SRC_DIR ${CMAKE_SOURCE_DIR}/src)
 set(BUILD_DIR ${CMAKE_BINARY_DIR}/build)
 set(BIN_DIR ${CMAKE_SOURCE_DIR}/bin) 
 
-file(GLOB_RECURSE SRCS ${SOURCE_DIR}/*.cpp)
+#file(GLOB_RECURSE SRCS ${SRC_DIR}/*.cpp)  # GLOB_RECURSE only matches files in the current directory (depth 1)
+## file(GLOB_RECURSE SRCS ${SRC_DIR}/**/*.cpp)  # GLOB_RECURSE with '**' matches .cpp files at any depth of subdirectories
 
-include_directories(/usr/include)
-include_directories(/usr/include/asio)
 
-set(COMMON_SOURCES ${SOURCE_DIR}/calculateChecksum.cpp)
-
-set(CLIENT_SOURCES ${SOURCE_DIR}/client.cpp ${COMMON_SOURCES})
-set(SERVER_SOURCES ${SOURCE_DIR}/server.cpp ${COMMON_SOURCES})
-
-add_executable(client ${CLIENT_SOURCES})
-target_link_libraries(client PRIVATE ${LIBS} pthread)
-
-add_executable(server ${SERVER_SOURCES})
-target_link_libraries(server PRIVATE ${LIBS} pthread)
-
-set_target_properties(client server PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR}
+include_directories(
+#    /usr/include
+    ${SRC_DIR}
+    ${SRC_DIR}/shared
+    ${SRC_DIR}/client
+    ${SRC_DIR}/server
 )
+
+option(BUILD_CLIENT "client" ON)
+option(BUILD_SERVER "server" ON)
+
+
+function(add_feature_executable FEATURE_NAME FEATURE_SOURCES)
+    string(TOUPPER ${FEATURE_NAME} FEATURE_UPPER)
+    set(FEATURE_OPTION "BUILD_${FEATURE_UPPER}")
+
+    if(${${FEATURE_OPTION}})
+        add_executable(${FEATURE_NAME} ${FEATURE_SOURCES})
+        target_link_libraries(${FEATURE_NAME} PRIVATE ${LIBS_MAIN})
+
+        #if(FEATURE_NAME STREQUAL "client")
+        #    target_link_libraries(${FEATURE_NAME} PRIVATE ${LIBS_CLIENT})
+        #endif()
+        #if(FEATURE_NAME STREQUAL "server")
+        #    target_link_libraries(${FEATURE_NAME} PRIVATE ${LIBS_SERVER})
+        #endif()
+
+        target_compile_definitions(${FEATURE_NAME} PRIVATE ${FEATURE_UPPER})
+        set_target_properties(${FEATURE_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
+    endif()
+endfunction()
+
+add_feature_executable(client ${SRC_DIR}/client/client.cpp)
+add_feature_executable(server ${SRC_DIR}/server/server.cpp)
+
 
 file(MAKE_DIRECTORY ${BUILD_DIR})
 file(MAKE_DIRECTORY ${BIN_DIR})
@@ -136,7 +158,6 @@ add_custom_target(clear_build
 )
 
 message(STATUS "------------------------------------------------------------")
-message(STATUS "Project: ${MY_PROJECT_BIN_NAME} (Version: ${MY_PROJECT_VERSION})")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 
 
@@ -155,6 +176,16 @@ message(STATUS "Warnings as Errors: ${ENABLE_WARNINGS_AS_ERRORS}")
 message(STATUS "Verbose Makefiles: ${ENABLE_VERBOSE_MAKEFILES}")
 message(STATUS "Compile Commands Export: ${ENABLE_COMPILE_COMMANDS}")
 message(STATUS "------------------------------------------------------------")
-
-
+message(STATUS "Enable Morse: ${BUILD_CLIENT}")
+message(STATUS "Enable Hex: ${BUILD_SERVER}")
+set(ASCII_ART "
+     _____                                 
+    (, /                                   
+      / __  _/_ __     _ _   _  __  _    _ 
+  ___/__/ (_(__/ (_(_(_(/___(/_/ (_/_)__(/_
+(__ /                                      
+                                           
+VERSION ${MY_PROJECT_VERSION}
+")
+message(STATUS "${ASCII_ART}")
 

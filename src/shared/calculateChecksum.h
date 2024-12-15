@@ -1,8 +1,11 @@
+#ifndef CALCULATE_CHECKSUM_H
+#define CALCULATE_CHECKSUM_H
+
 #include <openssl/sha.h>
 #include <openssl/evp.h>
 #include <iostream>
 
-void calculateChecksum(const char* data, size_t length, unsigned char* checksum) {
+inline void calculateChecksum(const char* data, size_t length, unsigned char* checksum) {
     // Allocate
     EVP_MD_CTX* digestContext = EVP_MD_CTX_new();
     if (!digestContext) {
@@ -33,3 +36,5 @@ void calculateChecksum(const char* data, size_t length, unsigned char* checksum)
 
     EVP_MD_CTX_free(digestContext);
 }
+
+#endif

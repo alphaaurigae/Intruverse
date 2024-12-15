@@ -1,10 +1,14 @@
-#include <boost/asio.hpp>
+#include "calculateChecksum.h"
+
 #include <iostream>
 #include <thread>
 #include <atomic>
 #include <functional>
 #include <cstring>
+
+#include <boost/asio.hpp>
 #include <openssl/sha.h>
+
 
 using boost::asio::ip::tcp;
 

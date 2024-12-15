@@ -1,16 +1,19 @@
-#include <boost/asio.hpp>
-#include <boost/asio/ssl.hpp>
+#include "calculateChecksum.h"
+
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <openssl/sha.h>
-#include <openssl/err.h>
-#include <openssl/evp.h>
 #include <mutex>
 #include <algorithm>
 #include <thread>
 #include <csignal>
 #include <atomic>
+
+#include <boost/asio.hpp>
+#include <boost/asio/ssl.hpp>
+#include <openssl/sha.h>
+#include <openssl/err.h>
+#include <openssl/evp.h>
 
 using boost::asio::ip::tcp;
 boost::asio::io_context io_context;
