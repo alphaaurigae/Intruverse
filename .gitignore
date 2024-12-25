@@ -1,0 +1,22 @@
+
+
+bin/
+build/
+
+
+.idea/
+.vscode/
+
+
+# Ignore archive files
+*.tar
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.zip
+*.rar
+*.7z
+*.gz
+*.bz2
+*.xz
+*.iso

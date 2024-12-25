@@ -1,10 +1,12 @@
+# Single bin template
+
 
 cmake_minimum_required(VERSION 3.28.3)
 project(Intruverse VERSION 888.0)
 
 
 set(MY_PROJECT_NAME "Intruverse")
-#set(MY_PROJECT_BIN1_NAME "slient")
+#set(MY_PROJECT_BIN1_NAME "client")
 #set(MY_PROJECT_BIN2_NAME "server")
 set(MY_PROJECT_VERSION "888.0")
 
