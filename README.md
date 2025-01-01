@@ -15,6 +15,7 @@
 - Build OS: "Ubuntu 24.04"
 
 ... cmake ...
+(g++/clang - Cmakelists "option(USE_CLANG" ON/OFF - default clang)
 
 - ```./build_cmake.sh``` - build
 - ```./clean_cmake.sh``` - tidy build && dirs
@@ -29,8 +30,9 @@ $ bin/client 127.0.0.1 12345
 Attempting to connect to server...
 Connected to the server.
 ```
-```(stream starts and file content shows, updated periodically (int main server.cpp))```
-
+```
+(stream starts and file content shows, updated periodically (int main server.cpp))```
+```
 
 ## Server
 
@@ -49,13 +51,13 @@ sendFileContent: Starting the process of sending file content.
 sendFileContent: File opened successfully.
 ```
 
-## USE
+## Use
 
 ` ./server <file_path>` (port hardcoded sever.cpp int main)
 
 ` ./client 127.0.0.1 12345` 
 
 
-### TODO
+### Todo
 - e.g "streaming" && timed read as options
 - sec .. tidy, format.
