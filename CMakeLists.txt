@@ -1,18 +1,19 @@
-# Multi bin template
+# Single & multi bin template
 
 # Main --------------------------------------------------------------------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.28.3)
 
 
-set(MY_PROJECT_NAME "Intruverse")
-set(MY_PROJECT_VERSION "888.0.0")
+set(PROJECT_NAME "Intruverse")
+set(PROJECT_VERSION "888.0.0")
 
 
-set(MY_PROJECT_BIN1_NAME "client")
-set(MY_PROJECT_BIN2_NAME "server")
+set(BIN1 "client")
+set(BIN2 "server")
+# [add executeables here] main name definition
 
 
-project(${MY_PROJECT_NAME} VERSION ${MY_PROJECT_VERSION} LANGUAGES CXX)
+project(${PROJECT_NAME} VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
 
 set(CMAKE_CXX_STANDARD 23)
@@ -58,18 +59,18 @@ endif()
 
 execute_process(
     COMMAND ${CXX_COMPILER} -v
-    OUTPUT_VARIABLE COMPILER_OUTPUT
-    ERROR_VARIABLE COMPILER_OUTPUT
+    OUTPUT_VARIABLE DETECT_COMPILER
+    ERROR_VARIABLE DETECT_COMPILER
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
 
-if(COMPILER_OUTPUT MATCHES "clang")
+if(DETECT_COMPILER MATCHES "clang")
     set(CMAKE_CXX_COMPILER_ID "Clang")
-elseif(COMPILER_OUTPUT MATCHES "gcc")
+elseif(DETECT_COMPILER MATCHES "gcc")
     set(CMAKE_CXX_COMPILER_ID "GNU")
 else()
-    message(FATAL_ERROR "Unknown compiler detected in: ${COMPILER_OUTPUT}")
+    message(FATAL_ERROR "Unknown compiler detected in: ${DETECT_COMPILER}")
 endif()
 
 
@@ -218,6 +219,17 @@ include_directories(
 # Build -------------------------------------------------------------------------------------------------------------------------------------
 
 
+#find_package(OpenCV REQUIRED)
+#
+#if(NOT (OpenCV_VERSION VERSION_GREATER "4.6.0" OR OpenCV_VERSION VERSION_EQUAL "4.6.0"))
+#    message(FATAL_ERROR "OpenCV version must be 4.6.0 or higher, found version ${OpenCV_VERSION}")
+#endif()
+
+# find_package(OpenCV REQUIRED VERSION 4.5.0 EXACT)
+# find_package(OpenCV REQUIRED VERSION 3.4.0 EXACT 4.5.0)
+#find_package(OpenCV REQUIRED)
+
+
 # global
 set(LIBS_MAIN
 uv
@@ -230,40 +242,40 @@ pthread
 )
 
 # per bin
-set(LIBS_${MY_PROJECT_BIN1_NAME}
+set(LIBS_${BIN1}
 )
-set(LIBS_${MY_PROJECT_BIN2_NAME}
+set(LIBS_${BIN2}
 )
 
 
-option(BUILD_${MY_PROJECT_BIN1_NAME} "Enable ${MY_PROJECT_BIN1_NAME}" ON)
-option(BUILD_${MY_PROJECT_BIN2_NAME} "Enable ${MY_PROJECT_BIN2_NAME}" ON)
+option(BUILD_${BIN1} "Enable ${BIN1}" ON)
+option(BUILD_${BIN2} "Enable ${BIN2}" ON)
 # [add executeables here]
 
 
-function(add_feature_executable FEATURE_NAME FEATURE_SOURCES)
-    set(FEATURE_OPTION "BUILD_${FEATURE_NAME}")
+function(add_feature_executable FEATURE FEATURE_SOURCES)
+    set(FEATURE_OPTION "BUILD_${FEATURE}")
 
     if(${${FEATURE_OPTION}})
-        add_executable(${FEATURE_NAME} ${FEATURE_SOURCES})
-        target_link_libraries(${FEATURE_NAME} PRIVATE ${LIBS_MAIN})
+        add_executable(${FEATURE} ${FEATURE_SOURCES})
+        target_link_libraries(${FEATURE} PRIVATE ${LIBS_MAIN})
 
         # Conditionally link feature-specific libraries
-        if(${FEATURE_NAME} STREQUAL ${MY_PROJECT_BIN1_NAME})
-            target_link_libraries(${FEATURE_NAME} PRIVATE ${LIBS_${MY_PROJECT_BIN1_NAME}})
+        if(${FEATURE} STREQUAL ${BIN1})
+            target_link_libraries(${FEATURE} PRIVATE ${LIBS_${BIN1}})
         endif()
-        if(${FEATURE_NAME} STREQUAL ${MY_PROJECT_BIN2_NAME})
-            target_link_libraries(${FEATURE_NAME} PRIVATE ${LIBS_${MY_PROJECT_BIN2_NAME}})
+        if(${FEATURE} STREQUAL ${BIN2})
+            target_link_libraries(${FEATURE} PRIVATE ${LIBS_${BIN2}})
         endif()
         # [add executeables here]
 
-        set_target_properties(${FEATURE_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
+        set_target_properties(${FEATURE} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
     endif()
 endfunction()
 
 
-add_feature_executable(${MY_PROJECT_BIN1_NAME} ${SRC_DIR}/${MY_PROJECT_BIN1_NAME}/main.cpp)
-add_feature_executable(${MY_PROJECT_BIN2_NAME} ${SRC_DIR}/${MY_PROJECT_BIN2_NAME}/main.cpp)
+add_feature_executable(${BIN1} ${SRC_DIR}/${BIN1}/main.cpp)
+add_feature_executable(${BIN2} ${SRC_DIR}/${BIN2}/main.cpp)
 # [add executeables here]
 
 
@@ -280,7 +292,7 @@ add_custom_target(my_clean
 
 # Print settings info (before build) --------------------------------------------------------------------------------------------------------
 message(STATUS "------------------------------------------------------------")
-message(STATUS "Project: ${MY_PROJECT_BIN_NAME} (Version: ${MY_PROJECT_VERSION})")
+message(STATUS "Project: ${PROJECT_NAME} (Version: ${PROJECT_VERSION})")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 
 
@@ -299,8 +311,8 @@ message(STATUS "Verbose Makefiles: ${ENABLE_VERBOSE_MAKEFILES}")
 message(STATUS "Compile Commands Export: ${ENABLE_COMPILE_COMMANDS}")
 message(STATUS "------------------------------------------------------------")
 
-message(STATUS "Build ${MY_PROJECT_BIN1_NAME}: ${BUILD_${MY_PROJECT_BIN1_NAME}}")
-message(STATUS "Build ${MY_PROJECT_BIN2_NAME}: ${BUILD_${MY_PROJECT_BIN2_NAME}}")
+message(STATUS "Build ${BIN1}: ${BUILD_${BIN1}}")
+message(STATUS "Build ${BIN2}: ${BUILD_${BIN2}}")
 # [add executeables here]
 
 
@@ -311,7 +323,11 @@ set(ASCII_ART "
   ___/__/ (_(__/ (_(_(_(/___(/_/ (_/_)__(/_
 (__ /                                      
                                            
-VERSION ${MY_PROJECT_VERSION}
+VERSION ${VERSION}
 ")
 message(STATUS "${ASCII_ART}")
+
+
+
+
 
