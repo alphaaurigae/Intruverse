@@ -1,14 +1,15 @@
 # Multi bin template
 
-
+# Main --------------------------------------------------------------------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.28.3)
-project(Intruverse VERSION 888.0)
 
 
 set(MY_PROJECT_NAME "Intruverse")
-#set(MY_PROJECT_BIN1_NAME "client")
-#set(MY_PROJECT_BIN2_NAME "server")
-set(MY_PROJECT_VERSION "888.0")
+set(MY_PROJECT_VERSION "888.0.0")
+
+
+set(MY_PROJECT_BIN1_NAME "client")
+set(MY_PROJECT_BIN2_NAME "server")
 
 
 project(${MY_PROJECT_NAME} VERSION ${MY_PROJECT_VERSION} LANGUAGES CXX)
@@ -217,6 +218,7 @@ include_directories(
 # Build -------------------------------------------------------------------------------------------------------------------------------------
 
 
+# global
 set(LIBS_MAIN
 uv
 ssl
@@ -227,42 +229,42 @@ boost_filesystem
 pthread
 )
 
-
-#set(LIBS_CLIENT
-#)
-
-
-#set(LIBS_SERVER
-#)
+# per bin
+set(LIBS_${MY_PROJECT_BIN1_NAME}
+)
+set(LIBS_${MY_PROJECT_BIN2_NAME}
+)
 
 
-option(BUILD_CLIENT "client" ON)
-option(BUILD_SERVER "server" ON)
+option(BUILD_${MY_PROJECT_BIN1_NAME} "Enable ${MY_PROJECT_BIN1_NAME}" ON)
+option(BUILD_${MY_PROJECT_BIN2_NAME} "Enable ${MY_PROJECT_BIN2_NAME}" ON)
+# [add executeables here]
 
 
 function(add_feature_executable FEATURE_NAME FEATURE_SOURCES)
-    string(TOUPPER ${FEATURE_NAME} FEATURE_UPPER)
-    set(FEATURE_OPTION "BUILD_${FEATURE_UPPER}")
+    set(FEATURE_OPTION "BUILD_${FEATURE_NAME}")
 
     if(${${FEATURE_OPTION}})
         add_executable(${FEATURE_NAME} ${FEATURE_SOURCES})
         target_link_libraries(${FEATURE_NAME} PRIVATE ${LIBS_MAIN})
 
-        #if(FEATURE_NAME STREQUAL "client")
-        #    target_link_libraries(${FEATURE_NAME} PRIVATE ${LIBS_CLIENT})
-        #endif()
-        #if(FEATURE_NAME STREQUAL "server")
-        #    target_link_libraries(${FEATURE_NAME} PRIVATE ${LIBS_SERVER})
-        #endif()
+        # Conditionally link feature-specific libraries
+        if(${FEATURE_NAME} STREQUAL ${MY_PROJECT_BIN1_NAME})
+            target_link_libraries(${FEATURE_NAME} PRIVATE ${LIBS_${MY_PROJECT_BIN1_NAME}})
+        endif()
+        if(${FEATURE_NAME} STREQUAL ${MY_PROJECT_BIN2_NAME})
+            target_link_libraries(${FEATURE_NAME} PRIVATE ${LIBS_${MY_PROJECT_BIN2_NAME}})
+        endif()
+        # [add executeables here]
 
-        target_compile_definitions(${FEATURE_NAME} PRIVATE ${FEATURE_UPPER})
         set_target_properties(${FEATURE_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${BIN_DIR})
     endif()
 endfunction()
 
 
-add_feature_executable(client ${SRC_DIR}/client/client.cpp)
-add_feature_executable(server ${SRC_DIR}/server/server.cpp)
+add_feature_executable(${MY_PROJECT_BIN1_NAME} ${SRC_DIR}/${MY_PROJECT_BIN1_NAME}/main.cpp)
+add_feature_executable(${MY_PROJECT_BIN2_NAME} ${SRC_DIR}/${MY_PROJECT_BIN2_NAME}/main.cpp)
+# [add executeables here]
 
 
 file(MAKE_DIRECTORY ${BUILD_DIR})
@@ -296,6 +298,12 @@ message(STATUS "Warnings as Errors: ${ENABLE_WARNINGS_AS_ERRORS}")
 message(STATUS "Verbose Makefiles: ${ENABLE_VERBOSE_MAKEFILES}")
 message(STATUS "Compile Commands Export: ${ENABLE_COMPILE_COMMANDS}")
 message(STATUS "------------------------------------------------------------")
+
+message(STATUS "Build ${MY_PROJECT_BIN1_NAME}: ${BUILD_${MY_PROJECT_BIN1_NAME}}")
+message(STATUS "Build ${MY_PROJECT_BIN2_NAME}: ${BUILD_${MY_PROJECT_BIN2_NAME}}")
+# [add executeables here]
+
+
 set(ASCII_ART "
      _____                                 
     (, /                                   
