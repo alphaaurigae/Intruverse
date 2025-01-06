@@ -292,30 +292,7 @@ add_custom_target(my_clean
 
 # Print settings info (before build) --------------------------------------------------------------------------------------------------------
 message(STATUS "------------------------------------------------------------")
-message(STATUS "Project: ${PROJECT_NAME} (Version: ${PROJECT_VERSION})")
-message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
-
-
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-elseif(CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
-endif()
-message(STATUS "CMake generator: ${CMAKE_GENERATOR}")
-message(STATUS "Compiler: ${CXX_COMPILER}")
-message(STATUS "Compiler Flags: ${CMAKE_CXX_FLAGS}")
-message(STATUS "Dependency Generation: ${ENABLE_DEPENDENCY_GENERATION}")
-message(STATUS "Enable sanitizer compile flags for runtime debugging: ${ENABLE_SANITIZERS}")
-message(STATUS "Warnings as Errors: ${ENABLE_WARNINGS_AS_ERRORS}")
-message(STATUS "Verbose Makefiles: ${ENABLE_VERBOSE_MAKEFILES}")
-message(STATUS "Compile Commands Export: ${ENABLE_COMPILE_COMMANDS}")
-message(STATUS "------------------------------------------------------------")
-
-message(STATUS "Build ${BIN1}: ${BUILD_${BIN1}}")
-message(STATUS "Build ${BIN2}: ${BUILD_${BIN2}}")
-# [add executeables here]
-
-
+#message(STATUS "Project: ${PROJECT_NAME} (Version: ${PROJECT_VERSION})")
 set(ASCII_ART "
      _____                                 
     (, /                                   
@@ -323,9 +300,35 @@ set(ASCII_ART "
   ___/__/ (_(__/ (_(_(_(/___(/_/ (_/_)__(/_
 (__ /                                      
                                            
-VERSION ${VERSION}
-")
+VERSION ${PROJECT_VERSION}")
 message(STATUS "${ASCII_ART}")
+message(STATUS "------------------------------------------------------------")
+message(STATUS "CMake generator: ${CMAKE_GENERATOR}")
+message(STATUS "Compiler: ${CXX_COMPILER}")
+message(STATUS "------------------------------------------------------------")
+message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "Default flags: ${COMPILER_FLAGS_BASE}")
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+message(STATUS "Debug build! Additional flags: ${COMPILER_FLAGS_DEBUG}")
+elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
+message(STATUS "Release build! Additional flags: ${COMPILER_FLAGS_RELEASE}")
+elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+message(STATUS "RelWithDebInfo build! Additional flags: ${COMPILER_FLAGS_RELWITHDEBINFO}")
+elseif(CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
+message(STATUS "MinSizeRel build! Additional flags: ${COMPILER_FLAGS_MINSIZEREL}")
+endif()
+#message(STATUS "Flags all: ${CMAKE_CXX_FLAGS}")
+message(STATUS "------------------------------------------------------------")
+message(STATUS "Dependency Generation: ${ENABLE_DEPENDENCY_GENERATION}")
+message(STATUS "Enable sanitizer compile flags for runtime debugging: ${ENABLE_SANITIZERS}")
+message(STATUS "Warnings as Errors: ${ENABLE_WARNINGS_AS_ERRORS}")
+message(STATUS "Verbose Makefiles: ${ENABLE_VERBOSE_MAKEFILES}")
+message(STATUS "Compile Commands Export: ${ENABLE_COMPILE_COMMANDS}")
+message(STATUS "------------------------------------------------------------")
+message(STATUS "Build ${BIN1}: ${BUILD_${BIN1}}")
+message(STATUS "Build ${BIN2}: ${BUILD_${BIN2}}")
+# [add executeables here]
+
 
 
 
